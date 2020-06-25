@@ -26,8 +26,22 @@ public class AdminClController {
     @ResponseStatus(HttpStatus.CREATED)
     public CheckingDTO createChecking(@PathVariable Integer id,
                                       @Validated @RequestBody Checking checking) {
-        return adminService.createChecking(id, checking);
+        return adminService.createCheckingPrimaryOwner(id, checking);
 
+    }
+
+    @PostMapping("/admin/create_checking_secondary_owner/{id_accountHolder}/{id_account}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void checkingSecondaryOwner(@PathVariable("id_accountHolder") Integer accountHolderId,
+                                       @PathVariable("id_account") Integer idAccount) {
+        adminService.putCheckingSecondaryOwner(accountHolderId, idAccount);
+    }
+
+    @PostMapping("/admin/create_credit_card_secondary_owner/{id_accountHolder}/{id_credit_card}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void creditCardSecondaryOwner(@PathVariable("id_accountHolder") Integer accountHolderId,
+                                       @PathVariable("id_credit_card") Integer idCreditCard) {
+        adminService.putCreditCardSecondaryOwner(accountHolderId, idCreditCard);
     }
 
     @PostMapping("/admin/create_saving/{id}")
@@ -44,47 +58,48 @@ public class AdminClController {
         return adminService.createCreditCard(id, creditCard);
     }
 
-    @GetMapping("/admin/find_all_credit_card/{id}")
-    public CreditCard creditCard(@PathVariable Integer id) throws Exception {
-        return adminService.findById(id);
-    }
-
     @GetMapping("/admin/get_balance_by_account/{id}")
     @ResponseStatus(HttpStatus.OK)
     public BalanceDTO getBalance(@PathVariable ("id") Integer accountId) {
         return adminService.getBalance(accountId);
     }
 
+    @GetMapping("/admin/get_balance_by_credit_card/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public BalanceDTO getBalanceCreditCard(@PathVariable("id") Integer creditCardId) {
+        return adminService.getBalanceByCreditCard(creditCardId);
+    }
+
     @PatchMapping("/admin/credit_account/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void creditAccount(@PathVariable ("id") Integer accountId,
+    @ResponseStatus(HttpStatus.OK)
+    public BalanceDTO creditAccount(@PathVariable ("id") Integer accountId,
                               @RequestParam BigDecimal amount,
                               @RequestParam(defaultValue="USD", required=false) String moneyType) {
-        adminService.creditAccount(accountId, amount, moneyType);
+        return adminService.creditAccount(accountId, amount, moneyType);
     }
 
     @PatchMapping("/admin/debt_account/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void debtAccount(@PathVariable ("id") Integer accountId,
+    @ResponseStatus(HttpStatus.OK)
+    public BalanceDTO debtAccount(@PathVariable ("id") Integer accountId,
                             @RequestParam BigDecimal amount,
                             @RequestParam(defaultValue="USD", required=false) String moneyType) {
-        adminService.debtAccount(accountId, amount, moneyType);
+        return adminService.debtAccount(accountId, amount, moneyType);
     }
 
     @PatchMapping("/admin/credit_credit_card/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void creditCreditCard(@PathVariable ("id") Integer accountId,
+    @ResponseStatus(HttpStatus.OK)
+    public BalanceDTO creditCreditCard(@PathVariable ("id") Integer accountId,
                                  @RequestParam BigDecimal amount,
                                  @RequestParam(defaultValue="USD", required=false) String moneyType) {
-        adminService.creditCreditCard(accountId, amount, moneyType);
+        return adminService.creditCreditCard(accountId, amount, moneyType);
     }
 
     @PatchMapping("/admin/debt_credit_card/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void debtCreditCard(@PathVariable ("id") Integer accountId,
+    @ResponseStatus(HttpStatus.OK)
+    public BalanceDTO debtCreditCard(@PathVariable ("id") Integer accountId,
                                @RequestParam BigDecimal amount,
                                @RequestParam(defaultValue="USD", required=false) String moneyType) {
-        adminService.debtCreditCard(accountId, amount, moneyType);
+        return adminService.debtCreditCard(accountId, amount, moneyType);
     }
 
     @PostMapping("/admin/create_third_party")

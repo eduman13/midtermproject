@@ -41,7 +41,7 @@ public class SecurityAspect {
     @Before("execution(* com.ironhack.midtermproject.controller.AccountHolderController.*(..))")
     public void securityAccountHolder(JoinPoint joinPoint) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        Integer id = joinPoint.getSignature().toShortString().contains("get_balance") ? (Integer) joinPoint.getArgs()[0] : (Integer) joinPoint.getArgs()[2];
+        Integer id = joinPoint.getSignature().toShortString().contains("getBalance") ? (Integer) joinPoint.getArgs()[0] : (Integer) joinPoint.getArgs()[2];
         Optional<AccountHolder> accountHolder = accountHolderRepository.findById(id);
         if (accountHolder.isPresent()) {
             if (!accountHolder.get().getUsername().equals(username)) {

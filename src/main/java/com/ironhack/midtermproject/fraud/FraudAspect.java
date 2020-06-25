@@ -2,7 +2,6 @@ package com.ironhack.midtermproject.fraud;
 
 import com.ironhack.midtermproject.model.fraud.Transaction;
 import com.ironhack.midtermproject.repository.fraud.TransactionRepository;
-import com.ironhack.midtermproject.schedule.ScheduleTasks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
@@ -29,12 +28,12 @@ public class FraudAspect {
             "execution(public void com.ironhack.midtermproject.service.ThirdPartyService.*(..)) ||" +
             "execution(public void com.ironhack.midtermproject.service.AccountHolderService.creditAccount(..))")
     public void detectFraudBySeconds(JoinPoint joinPoint) {
-        if (!joinPoint.getSignature().getName().contains("CreditCard")) {
+        if (!joinPoint.getSignature().getName().contains("CreditCard") && joinPoint.getSignature().getName().contains("create")) {
             Integer id = (Integer) joinPoint.getArgs()[0];
             LocalDateTime now = LocalDateTime.now();
             if (transactionRepository.findAllByAccountId(id).stream().anyMatch(transaction ->
                     Duration.between(transaction.getTimestamp(), now).getSeconds() <= 1)) {
-                LOGGER.error("Fraud detecton account " + id + ", more than one transaction per second");
+                LOGGER.error("Fraud detected on account " + id + ", more than one transaction per second");
                 throw new RuntimeException("Fraud detected on account " + id);
             }
         }
@@ -44,7 +43,7 @@ public class FraudAspect {
             "execution(public void com.ironhack.midtermproject.service.ThirdPartyService.*(..)) ||" +
             "execution(public void com.ironhack.midtermproject.service.AccountHolderService.creditAccount(..))")
     public void saveTransaction(JoinPoint joinPoint) {
-        if (!joinPoint.getSignature().getName().contains("CreditCard")) {
+        if (!joinPoint.getSignature().getName().contains("CreditCard")  && joinPoint.getSignature().getName().contains("create")) {
             Object[] args = joinPoint.getArgs();
             Integer accountId = (Integer) args[0];
             BigDecimal amount = (BigDecimal) args[1];

@@ -29,14 +29,14 @@ public class ExceptionController {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(IdNotFoundException.class)
-    public ResponseEntity<Error> handleObjectNotFound(IdNotFoundException e) {
-        Error error = new Error();
-            error.setMessage(e.getMessage());
-            error.setStatus(HttpStatus.NOT_FOUND.toString());
-            error.setLocalDateTime(LocalDateTime.now());
-        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
-    }
+//    @ExceptionHandler(IdNotFoundException.class)
+//    public ResponseEntity<Error> handleObjectNotFound(IdNotFoundException e) {
+//        Error error = new Error();
+//            error.setMessage(e.getMessage());
+//            error.setStatus(HttpStatus.NOT_FOUND.toString());
+//            error.setLocalDateTime(LocalDateTime.now());
+//        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+//    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Error> handleRunTimeException(RuntimeException e) {
@@ -47,17 +47,19 @@ public class ExceptionController {
         }
         Error error = new Error();
             error.setMessage(e.getMessage());
-            error.setStatus((e.getMessage().contains("does not") ? HttpStatus.NOT_FOUND.toString() : HttpStatus.BAD_REQUEST.toString()));
+            error.setStatus((e.getMessage().contains("does not") ? HttpStatus.NOT_FOUND.toString() :
+                    e.getMessage().contains("Access denied") ? HttpStatus.FORBIDDEN.toString() : HttpStatus.BAD_REQUEST.toString()));
             error.setLocalDateTime(LocalDateTime.now());
-        return new ResponseEntity<>(error, e.getMessage().contains("does not") ? HttpStatus.NOT_FOUND : HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(error, e.getMessage().contains("does not") ? HttpStatus.NOT_FOUND :
+                e.getMessage().contains("Access denied") ? HttpStatus.FORBIDDEN : HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(InsufficientQuantityException.class)
-    public ResponseEntity<Error> handleFraudDetectionException(InsufficientQuantityException e) {
-        Error error = new Error();
-            error.setMessage(e.getMessage());
-            error.setStatus(HttpStatus.BAD_REQUEST.toString());
-            error.setLocalDateTime(LocalDateTime.now());
-        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(InsufficientQuantityException.class)
+//    public ResponseEntity<Error> handleFraudDetectionException(InsufficientQuantityException e) {
+//        Error error = new Error();
+//            error.setMessage(e.getMessage());
+//            error.setStatus(HttpStatus.BAD_REQUEST.toString());
+//            error.setLocalDateTime(LocalDateTime.now());
+//        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+//    }
 }

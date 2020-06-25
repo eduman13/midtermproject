@@ -100,6 +100,7 @@ public class ScheduleTasks {
                 if (amountFraud.compareTo(new BigDecimal(amount)) > 0) {
                     Optional<Checking> checking = checkingRepository.findById(accountId);
                     if (checking.isPresent()) {
+                        LOGGER.error("Fraud detected on Account " + accountId);
                         checking.get().setStatus(Status.FROZEN);
                         checkingRepository.save(checking.get());
                     }

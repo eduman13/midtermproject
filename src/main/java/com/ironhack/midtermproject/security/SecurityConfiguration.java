@@ -24,6 +24,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
   EntryPoint entryPoint;
+
+  @Autowired
+  AccessDenied accessDenied;
   
   @Bean
   public PasswordEncoder passwordEncoder () {
@@ -40,7 +43,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Override
   public void configure(HttpSecurity httpSecurity) throws Exception {
 
-    httpSecurity.httpBasic().authenticationEntryPoint(entryPoint);
+    httpSecurity.httpBasic().authenticationEntryPoint(entryPoint).and().exceptionHandling().accessDeniedHandler(accessDenied);
 
     httpSecurity.logout().logoutUrl("/logout").invalidateHttpSession(true).deleteCookies("JSESSIONID");
 
@@ -53,9 +56,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       .mvcMatchers("/loggedin").authenticated()
       .mvcMatchers("/roles").hasAuthority("ROLE_TECHNICIAN")
       .mvcMatchers("/admin").hasAuthority("ROLE_ADMIN")
-      .mvcMatchers(HttpMethod.POST, "/admin/create_saving/{id}").hasAuthority("ROLE_ADMIN")
-      .mvcMatchers(HttpMethod.PATCH, "/account_holder/get_balance/{id}").hasAuthority("ROLE_ACCOUNT_HOLDER")
-      .mvcMatchers(HttpMethod.PATCH, "/third_party/credit_account/{id_account}").hasAuthority("ROLE_THIRD_PARTY")
+      .mvcMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+      .mvcMatchers("/account_holder/**").hasAuthority("ROLE_ACCOUNT_HOLDER")
+      .mvcMatchers("/third_party/**").hasAuthority("ROLE_THIRD_PARTY")
       .anyRequest().permitAll();
   }
 }

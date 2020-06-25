@@ -141,4 +141,12 @@ public class CreditCard {
     public void setSecretKey(String secretKey) {
         this.secretKey = secretKey;
     }
+
+    public AccountHolder getSecondaryOwner() {
+        return secondaryOwner;
+    }
+
+    public void setSecondaryOwner(AccountHolder secondaryOwner) {
+        this.secondaryOwner = secondaryOwner;
+    }
 }

@@ -8,6 +8,6 @@ public class PasswordUtility {
     public static void main(String[] args) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        System.out.println(passwordEncoder.encode("puyi"));
+        System.out.println(passwordEncoder.encode("eduman13"));
     }
 }

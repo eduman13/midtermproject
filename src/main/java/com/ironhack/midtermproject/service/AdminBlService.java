@@ -53,7 +53,7 @@ public class AdminBlService {
     RoleRepository roleRepository;
 
     @Transactional
-    public CheckingDTO createChecking(Integer accountHolderId, Checking checking) throws RuntimeException {
+    public CheckingDTO createCheckingPrimaryOwner(Integer accountHolderId, Checking checking) throws RuntimeException {
         AccountHolder accountHolder = findByIdAccountHolder(accountHolderId, "create");
         if (Optional.ofNullable(accountHolder.getPrimaryChecking()).isEmpty()) {
             if (isUnder24(accountHolder)) {
@@ -66,16 +66,28 @@ public class AdminBlService {
                 return CheckingDTO.checkingToCheckingDTO(checkingRepository.save(checkingSave));
             }
         } else {
-            if (Optional.ofNullable(accountHolder.getSecondaryChecking()).isEmpty()) {
-                if (accountHolderId == accountHolder.getId()) {
-                    throw new RuntimeException("Account Holder " + accountHolderId + " is already the primaryOwner");
-                }
-                Checking checkingSave = new Checking(checking);
-                    checkingSave.setSecondaryOwner(accountHolder);
-                return CheckingDTO.checkingToCheckingDTO(checkingRepository.save(checkingSave));
-            } else {
-                throw new RuntimeException("Account Holder does have two accounts associated");
+            throw new RuntimeException("AccountHolder " + accountHolder.getId() +  " has already a primary Account");
+        }
+    }
+
+    @Transactional
+    public void putCheckingSecondaryOwner(Integer accountHolderId, Integer creditCardId) throws RuntimeException {
+        AccountHolder accountHolder = findByIdAccountHolder(accountHolderId, "create");
+        if (Optional.ofNullable(accountHolder.getSecondaryChecking()).isEmpty()) {
+            Checking checking = checkingRepository.findById(creditCardId).orElseThrow(() ->
+                    new RuntimeException("Account does not exist"));
+            if (accountHolderId == checking.getPrimaryOwner().getId()) {
+                throw new RuntimeException("Primary owner and second owner are the same AccountHolder");
             }
+            if (Optional.ofNullable(checking.getSecondaryOwner()).isEmpty()) {
+                checking.setSecondaryOwner(accountHolder);
+                accountHolder.setSecondaryChecking(checking);
+                checkingRepository.save(checking);
+            } else {
+                throw new RuntimeException("Account " + checking.getId() + " has already a secondary owner");
+            }
+        } else {
+            throw new RuntimeException("AccountHolder " + accountHolder.getId() +  " has already a secondary Account");
         }
     }
 
@@ -86,81 +98,91 @@ public class AdminBlService {
             Saving savingSave = new Saving(saving);
                 savingSave.setPrimaryOwner(accountHolder);
             return SavingDTO.savingToSavingDTO(savingRepository.save(savingSave));
-        }
-        if (Optional.ofNullable(accountHolder.getSecondaryChecking()).isEmpty()) {
-            if (accountHolderId == accountHolder.getId()) {
-                throw new RuntimeException("Account Holder " + accountHolderId + " is already the primaryOwner");
-            }
-            Saving savingSave = new Saving(saving);
-                savingSave.setSecondaryOwner(accountHolder);
-            return SavingDTO.savingToSavingDTO(savingRepository.save(savingSave));
         } else {
-            throw new RuntimeException("Account Holder does have two accounts associated");
+            throw new RuntimeException("AccountHolder " + accountHolder.getId() +  " has already a primary Account");
         }
     }
 
     @Transactional
-    public CreditCardDTO createCreditCard(Integer accountHolderId, CreditCard creditCard) throws RuntimeException {
+    public CreditCardDTO createCreditCard(Integer accountHolderId, CreditCard creditCardId) throws RuntimeException {
         AccountHolder accountHolder = findByIdAccountHolder(accountHolderId, "create");
         if (Optional.ofNullable(accountHolder.getPrimarycreditCard()).isEmpty()) {
-            CreditCard creditCardSave = new CreditCard(creditCard);
+            CreditCard creditCardSave = new CreditCard(creditCardId);
                 creditCardSave.setPrimaryOwner(accountHolder);
             return CreditCardDTO.creditCardToCreditCardDTO(creditCardRepository.save(creditCardSave));
         } else {
-            if (Optional.ofNullable(accountHolder.getSecondcreditCard()).isEmpty()) {
-                if (accountHolderId == accountHolder.getId()) {
-                    throw new RuntimeException("Account Holder " + accountHolderId + " is already the primaryOwner");
-                }
-                CreditCard creditCardSave = new CreditCard(creditCard);
-                    creditCardSave.setSecondaryHolder(accountHolder);
-                return CreditCardDTO.creditCardToCreditCardDTO(creditCardRepository.save(creditCardSave));
-            } else {
-                throw new RuntimeException("Account Holder does have two credit card associated");
-            }
+            throw new RuntimeException("AccountHolder " + accountHolder.getId() +  " has already a CreditCard");
         }
     }
 
-    public CreditCard findById(Integer id) throws Exception {
-        return creditCardRepository.findById(id).orElseThrow(Exception::new);
+    @Transactional
+    public void putCreditCardSecondaryOwner(Integer accountHolderId, Integer creditCardId) throws RuntimeException {
+        AccountHolder accountHolder = findByIdAccountHolder(accountHolderId, "create");
+        if (Optional.ofNullable(accountHolder.getSecondcreditCard()).isEmpty()) {
+            CreditCard creditCard = creditCardRepository.findById(creditCardId).orElseThrow(() ->
+                    new RuntimeException("CreditCard does not exist"));
+            if (accountHolderId == creditCard.getPrimaryOwner().getId()) {
+                throw new RuntimeException("Primary owner and second owner are the same AccountHolder");
+            }
+            if (Optional.ofNullable(creditCard.getSecondaryOwner()).isEmpty()) {
+                creditCard.setSecondaryOwner(accountHolder);
+                accountHolder.setSecondcreditCard(creditCard);
+                creditCardRepository.save(creditCard);
+            } else {
+                throw new RuntimeException("CreditCard " + creditCard.getId() + " has already a secondary owner");
+            }
+        } else {
+            throw new RuntimeException("AccountHolder " + accountHolder.getId() +  " has already a secondary CreditCard");
+        }
     }
 
     @Transactional(readOnly=true)
     public BalanceDTO getBalance(Integer accountId) throws RuntimeException {
-        AccountHolder accountHolder = findByIdAccountHolder(accountId, "get");
+        AccountHolder accountHolder = findByIdAccountHolder(accountId, "Account");
+        return BalanceDTO.balanceToBalanceDTO(accountHolder.getPrimaryChecking().getBalance(), accountHolder.getPrimaryChecking().getMoneyType());
+    }
+
+    @Transactional(readOnly=true)
+    public BalanceDTO getBalanceByCreditCard(Integer creditCardId) {
+        AccountHolder accountHolder = findByIdAccountHolder(creditCardId, "CreditCard");
+        return BalanceDTO.balanceToBalanceDTO(accountHolder.getPrimarycreditCard().getBalance(), accountHolder.getPrimarycreditCard().getMoneyType());
+    }
+
+    @Transactional
+    public BalanceDTO creditAccount(Integer accountId, BigDecimal amount, String moneyType) throws RuntimeException {
+        AccountHolder accountHolder = findByIdAccountHolder(accountId, "Account");
+        BigDecimal balanceUpdate = Utils.debtCreditTransaction("credit", amount, moneyType, accountHolder.getPrimaryChecking());
+        accountHolder.getPrimaryChecking().setBalance(balanceUpdate);
+        checkingRepository.save(accountHolder.getPrimaryChecking());
         return BalanceDTO.balanceToBalanceDTO(accountHolder.getPrimaryChecking().getBalance(), accountHolder.getPrimaryChecking().getMoneyType());
     }
 
     @Transactional
-    public void creditAccount(Integer accountId, BigDecimal amount, String moneyType) throws RuntimeException {
-        AccountHolder accountHolder = findByIdAccountHolder(accountId, "creditAccount");
-        BigDecimal balanceUpdate = Utils.debtCreditTransaction("credit", amount, moneyType, accountHolder.getPrimaryChecking());
-        accountHolder.getPrimaryChecking().setBalance(balanceUpdate);
-        checkingRepository.save(accountHolder.getPrimaryChecking());
-    }
-
-    @Transactional
-    public void debtAccount(Integer accountId, BigDecimal amount, String moneyType) {
-        AccountHolder accountHolder = findByIdAccountHolder(accountId, "debtAccount");
+    public BalanceDTO debtAccount(Integer accountId, BigDecimal amount, String moneyType) {
+        AccountHolder accountHolder = findByIdAccountHolder(accountId, "Account");
         BigDecimal balanceUpdate = Utils.debtCreditTransaction("debt", amount, moneyType, accountHolder.getPrimaryChecking());
         accountHolder.getPrimaryChecking().setBalance(balanceUpdate);
-        if (Utils.applyPenaltyFee(accountHolder.getPrimaryChecking().getMinimumBalance(), balanceUpdate)) {
+        if (Utils.applyPenaltyFee(Optional.ofNullable(accountHolder.getPrimaryChecking().getMinimumBalance()), balanceUpdate)) {
             LOGGER.info("penaltyFee applied to account " + accountId);
             balanceUpdate = balanceUpdate.subtract(accountHolder.getPrimaryChecking().getPenaltyFee());
+            accountHolder.getPrimaryChecking().setBalance(balanceUpdate);
         }
         checkingRepository.save(accountHolder.getPrimaryChecking());
+        return BalanceDTO.balanceToBalanceDTO(accountHolder.getPrimaryChecking().getBalance(), accountHolder.getPrimaryChecking().getMoneyType());
     }
 
     @Transactional
-    public void creditCreditCard(Integer accountId, BigDecimal amount, String moneyType) throws RuntimeException {
-        AccountHolder accountHolder = findByIdAccountHolder(accountId, "creditCreditCard");
+    public BalanceDTO creditCreditCard(Integer accountId, BigDecimal amount, String moneyType) throws RuntimeException {
+        AccountHolder accountHolder = findByIdAccountHolder(accountId, "CreditCard");
         BigDecimal balanceUpdate = Utils.debtCreditTransactionCreditCard("credit", amount, moneyType, accountHolder.getPrimarycreditCard());
         accountHolder.getPrimarycreditCard().setBalance(balanceUpdate);
         creditCardRepository.save(accountHolder.getPrimarycreditCard());
+        return BalanceDTO.balanceToBalanceDTO(accountHolder.getPrimarycreditCard().getBalance(), accountHolder.getPrimarycreditCard().getMoneyType());
     }
 
     @Transactional
-    public void debtCreditCard(Integer accountId, BigDecimal amount, String moneyType) {
-        AccountHolder accountHolder = findByIdAccountHolder(accountId, "debtCreditCard");
+    public BalanceDTO debtCreditCard(Integer accountId, BigDecimal amount, String moneyType) {
+        AccountHolder accountHolder = findByIdAccountHolder(accountId, "CreditCard");
         if (amount.compareTo(accountHolder.getPrimarycreditCard().getCreditLimit()) > 0) {
             LOGGER.info("credit limit exceeded on account " + accountId);
             throw new RuntimeException("creditLimit Exceeded");
@@ -168,6 +190,7 @@ public class AdminBlService {
         BigDecimal balanceUpdate = Utils.debtCreditTransactionCreditCard("debt", amount, moneyType, accountHolder.getPrimarycreditCard());
         accountHolder.getPrimarycreditCard().setBalance(balanceUpdate);
         creditCardRepository.save(accountHolder.getPrimarycreditCard());
+        return BalanceDTO.balanceToBalanceDTO(accountHolder.getPrimarycreditCard().getBalance(), accountHolder.getPrimarycreditCard().getMoneyType());
     }
 
     public ThirdParty createThirdParty(ThirdParty thirdParty) {
