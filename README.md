@@ -1,9 +1,9 @@
 # Midtermproject
-##Introduction
+## Introduction
 This project consists of the implementation of a small banking system. 
 composed of the following part that we are going to explain
 
-##Use Case
+## Use Case
 ![Use Case] (./img/CasosDeUso.png)
 
 ## Class Diagram
