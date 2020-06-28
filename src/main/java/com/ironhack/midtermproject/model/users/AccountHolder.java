@@ -10,10 +10,6 @@ import java.time.LocalDate;
 @Entity
 public class AccountHolder extends User {
 
-//    @Id
-//    @GeneratedValue(strategy=GenerationType.IDENTITY)
-//    private Integer id;
-
     private String name;
 
     private LocalDate birthday;

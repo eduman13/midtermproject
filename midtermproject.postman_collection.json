@@ -1,0 +1,813 @@
+{
+	"info": {
+		"_postman_id": "7c27b28a-15f1-4329-8252-fed084c24926",
+		"name": "midtermproject",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "createThirdParty",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Puyi\",\r\n    \"password\": \"$2a$10$I7UMuPJslD3VKXRfab3oku6Am4X/zMFm4UutWz.Sy1tOp5KcbbUcu\",\r\n    \"hashKey\": \"KobeBryant\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/admin/create_third_party",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"create_third_party"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBalanceCreditCard",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "eddy",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/get_balance_by_credit_card/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"get_balance_by_credit_card",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createSaving",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"balance\": 34,\r\n    \"status\": \"ACTIVE\",\r\n    \"interestRate\": 0.55\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/admin/create_saving/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"create_saving",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createChecking",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"balance\": 1234.34,\r\n    \"secretKey\": \"Mamporrero\",\r\n    \"status\": \"ACTIVE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/admin/create_checking/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"create_checking",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ceateCreditCard",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"balance\": 4567\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/admin/create_credit_card/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"create_credit_card",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "debtAccount",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/debt_account/1?amount=75",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"debt_account",
+								"1"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "75"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "debtCreditCard",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/debt_credit_card/1?amount=14",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"debt_credit_card",
+								"1"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "14"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putSecondaryOwnerCreditCard",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/create_credit_card_secondary_owner/3/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"create_credit_card_secondary_owner",
+								"3",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getBalanceAccount",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/admin/get_balance_by_credit_card/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"admin",
+								"get_balance_by_credit_card",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "putSecondaryOwnerAccount",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/create_checking_secondary_owner/3/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"create_checking_secondary_owner",
+								"3",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditAccount",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/credit_account/1?amount=75",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"credit_account",
+								"1"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "75"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditCreditCard",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/admin/credit_credit_card/1?amount=75",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"admin",
+								"credit_credit_card",
+								"1"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "75"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "AccountHolder",
+			"item": [
+				{
+					"name": "getBalanceAccount",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "eddy",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "eddy",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/account_holder/get_balance/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"account_holder",
+								"get_balance",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "transferAccount",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "eddas",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "eddy",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/account_holder/transfer_account/2/1?amount=10&beneficiaryName=Nadie",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"account_holder",
+								"transfer_account",
+								"2",
+								"1"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "10"
+								},
+								{
+									"key": "beneficiaryName",
+									"value": "Nadie"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "ThirdParty",
+			"item": [
+				{
+					"name": "creditAccountThirdParty",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "username",
+									"value": "eduman",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "eduman13",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "hash_key",
+								"value": "f6a55bebd2ba188ca5b7a8e921fd9a76cad5323c942eacba7d748c087ff6835a",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/third_party/credit_account/11?amount=500&secret_key=Tronco",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"third_party",
+								"credit_account",
+								"11"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "500"
+								},
+								{
+									"key": "secret_key",
+									"value": "Tronco"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "debitAccountThirdParty",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "eduman13",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "eduman",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/third_party/debt_account/11?amount=500&secret_key=Tronco",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"third_party",
+								"debt_account",
+								"11"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "500"
+								},
+								{
+									"key": "secret_key",
+									"value": "Tronco"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "debtCreditCardThirdParty",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "eduman13",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "eduman",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/third_party/debt_credit_card/11?amount=500&secret_key=Tronco",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"third_party",
+								"debt_credit_card",
+								"11"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "500"
+								},
+								{
+									"key": "secret_key",
+									"value": "Tronco"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "creditCreditCardThirdParty",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "eduman13",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "eduman",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/third_party/credit_credit_card/11?amount=500&secret_key=Tronco",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"third_party",
+								"credit_credit_card",
+								"11"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "500"
+								},
+								{
+									"key": "secret_key",
+									"value": "Tronco"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
