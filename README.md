@@ -4,10 +4,10 @@ This project consists of the implementation of a small banking system.
 composed of the following part that we are going to explain
 
 ## Use Case
-![Use Case] (./img/CasosDeUso.png)
+![Use Case](./img/CasosDeUso.png)
 
 ## Class Diagram
-![Class Diagram] (./img/DiagramaClases.png)
+![Class Diagram](./img/DiagramaClases.png)
 
 ## Accounts
 There are 4 different types of bank accounts
