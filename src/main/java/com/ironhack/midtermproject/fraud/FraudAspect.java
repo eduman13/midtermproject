@@ -24,11 +24,11 @@ public class FraudAspect {
     @Autowired
     TransactionRepository transactionRepository;
 
-    @Before(value="execution(public void com.ironhack.midtermproject.service.AdminBlService.*(..)) ||" +
-            "execution(public void com.ironhack.midtermproject.service.ThirdPartyService.*(..)) ||" +
-            "execution(public void com.ironhack.midtermproject.service.AccountHolderService.creditAccount(..))")
+    @Before(value="execution(public * com.ironhack.midtermproject.service.AdminBlService.*(..)) ||" +
+            "execution(public * com.ironhack.midtermproject.service.ThirdPartyService.*(..)) ||" +
+            "execution(public * com.ironhack.midtermproject.service.AccountHolderService.creditAccount(..))")
     public void detectFraudBySeconds(JoinPoint joinPoint) {
-        if (!joinPoint.getSignature().getName().contains("CreditCard") && joinPoint.getSignature().getName().contains("create")) {
+        if (joinPoint.getSignature().getName().contains("debtAccount") || joinPoint.getSignature().getName().contains("creditAccount")) {
             Integer id = (Integer) joinPoint.getArgs()[0];
             LocalDateTime now = LocalDateTime.now();
             if (transactionRepository.findAllByAccountId(id).stream().anyMatch(transaction ->
@@ -39,11 +39,11 @@ public class FraudAspect {
         }
     }
 
-    @AfterReturning("execution(public void com.ironhack.midtermproject.service.AdminBlService.*(..)) ||" +
-            "execution(public void com.ironhack.midtermproject.service.ThirdPartyService.*(..)) ||" +
-            "execution(public void com.ironhack.midtermproject.service.AccountHolderService.creditAccount(..))")
+    @AfterReturning("execution(public * com.ironhack.midtermproject.service.AdminBlService.*(..)) ||" +
+            "execution(public * com.ironhack.midtermproject.service.ThirdPartyService.*(..)) ||" +
+            "execution(public * com.ironhack.midtermproject.service.AccountHolderService.*(..))")
     public void saveTransaction(JoinPoint joinPoint) {
-        if (!joinPoint.getSignature().getName().contains("CreditCard")  && joinPoint.getSignature().getName().contains("create")) {
+        if (joinPoint.getSignature().getName().contains("debtAccount") || joinPoint.getSignature().getName().contains("creditAccount")) {
             Object[] args = joinPoint.getArgs();
             Integer accountId = (Integer) args[0];
             BigDecimal amount = (BigDecimal) args[1];

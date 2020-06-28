@@ -236,7 +236,7 @@ class AdminClControllerTest {
         saving = new Saving();
         saving.setBalance(new BigDecimal(150));
         saving.setStatus(Status.ACTIVE);
-        this.mockMvc.perform(post("/admin/create_saving/8")
+        this.mockMvc.perform(post("/admin/create_saving/13")
                 .content(objectMapper.writeValueAsString(saving))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.balance").value(150))
@@ -256,7 +256,7 @@ class AdminClControllerTest {
             saving.setMinimumBalance(new BigDecimal(900));
             saving.setInterestRate(new BigDecimal("0.03"));
             saving.setStatus(Status.ACTIVE);
-        this.mockMvc.perform(post("/admin/create_saving/9")
+        this.mockMvc.perform(post("/admin/create_saving/14")
                 .content(objectMapper.writeValueAsString(saving))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.balance").value(150))
@@ -502,25 +502,36 @@ class AdminClControllerTest {
     @Test
     @Order(39)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
-    void debtAccount_Ok() throws Exception {
+    void debtAccount_FraudDetectionMoreThanOneTransactionPerSecond_BadRequest() throws Exception {
         this.mockMvc.perform(patch("/admin/debt_account/1")
                 .param("amount", "5"))
-                .andExpect(jsonPath("$.balance").value(275))
-                .andExpect(status().isOk());
+                .andExpect(jsonPath("$.message").value("Fraud detected on account 1"))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @Order(40)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
-    void debtAccount_Ok_WithPenaltyFee() throws Exception {
-        this.mockMvc.perform(patch("/admin/debt_account/1")
+    void debtAccount_Ok() throws Exception {
+        this.mockMvc.perform(patch("/admin/debt_account/8")
                 .param("amount", "75"))
-                .andExpect(jsonPath("$.balance").value(160))
+                .andExpect(jsonPath("$.balance").value(485))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @Order(41)
+    @WithMockUser(username="admin", password="admin", roles="ADMIN")
+    void debtAccount_Ok_WithPenaltyFee() throws Exception {
+        this.mockMvc.perform(patch("/admin/debt_account/10")
+                .param("amount", "500"))
+                .andExpect(jsonPath("$.balance").value(20))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @Order(41)
+    @Order(42)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void creditCreditCard_AccountHolderDoesNotExist_NotFound() throws Exception {
         this.mockMvc.perform(patch("/admin/credit_credit_card/20")
@@ -530,7 +541,7 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(42)
+    @Order(43)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void creditCreditCard_AccountHolderDoesNotHaveAnyCreditCard_NotFound() throws Exception {
         this.mockMvc.perform(patch("/admin/credit_credit_card/12")
@@ -540,7 +551,7 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(43)
+    @Order(44)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void creditCreditCard_Ok() throws Exception {
         this.mockMvc.perform(patch("/admin/credit_credit_card/1")
@@ -550,7 +561,7 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(44)
+    @Order(45)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void debtCreditCard_AccountHolderDoesNotExist_NotFound() throws Exception {
         this.mockMvc.perform(patch("/admin/debt_credit_card/20")
@@ -560,7 +571,7 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(45)
+    @Order(46)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void debtCreditCard_AccountHolderDoesNotHaveAnyCreditCard_NotFound() throws Exception {
         this.mockMvc.perform(patch("/admin/debt_credit_card/12")
@@ -570,7 +581,7 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(46)
+    @Order(47)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void debtCreditCard_CreditLimitExceeded_BadRequest() throws Exception {
         this.mockMvc.perform(patch("/admin/debt_credit_card/1")
@@ -580,7 +591,7 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(47)
+    @Order(48)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void debtCreditCard_Ok() throws Exception {
         this.mockMvc.perform(patch("/admin/debt_credit_card/1")
@@ -590,7 +601,7 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(48)
+    @Order(49)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void createThirdParty() throws Exception {
         thirdParty = new ThirdParty();
@@ -607,16 +618,16 @@ class AdminClControllerTest {
     }
 
     @Test
-    @Order(49)
+    @Order(50)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void checkingSecondaryOwner_AccountDoesNotExist_NotFound() throws Exception {
-        this.mockMvc.perform(post("/admin/create_checking_secondary_owner/12/11"))
+        this.mockMvc.perform(post("/admin/create_checking_secondary_owner/13/20"))
                 .andExpect(jsonPath("$.message").value("Account does not exist"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @Order(50)
+    @Order(51)
     @WithMockUser(username="admin", password="admin", roles="ADMIN")
     void checkingSecondaryOwner_AccountHaveSecondaryOwner_BadRequest() throws Exception {
         this.mockMvc.perform(post("/admin/create_checking_secondary_owner/3/2"))

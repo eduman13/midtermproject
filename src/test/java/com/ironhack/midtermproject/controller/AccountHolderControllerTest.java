@@ -52,6 +52,7 @@ class AccountHolderControllerTest {
     @WithMockUser(username="eddas", password="eddy", roles="ACCOUNT_HOLDER")
     public void getBalance_AccountDoesNotBelongsToUser_Forbidden() throws Exception {
         this.mockMvc.perform(get("/account_holder/get_balance/1"))
+                .andExpect(jsonPath("$.message").value("Access denied"))
                 .andExpect(status().isForbidden());
     }
 
@@ -60,6 +61,7 @@ class AccountHolderControllerTest {
     @WithMockUser(username="eddyLover", password="eddy", roles="ACCOUNT_HOLDER")
     public void getBalance_AccountHolderDoesNotExist_NotFound() throws Exception {
         this.mockMvc.perform(get("/account_holder/get_balance/30"))
+                .andExpect(jsonPath("$.message").value("Account Holder does not exist"))
                 .andExpect(status().isNotFound());
     }
 
@@ -68,6 +70,7 @@ class AccountHolderControllerTest {
     @WithMockUser(username="user12", password="eddy", roles="ACCOUNT_HOLDER")
     public void getBalance_AccountHolderDoesNotHaveAccount_NotFound() throws Exception {
         this.mockMvc.perform(get("/account_holder/get_balance/12"))
+                .andExpect(jsonPath("$.message").value("Account Holder 12 does not have any Account"))
                 .andExpect(status().isNotFound());
     }
 
@@ -76,6 +79,7 @@ class AccountHolderControllerTest {
     @WithMockUser(username="eddyLover", password="eddy", roles="ACCOUNT_HOLDER")
     public void getBalance_AccountFrozen_BadRequest() throws Exception {
         this.mockMvc.perform(get("/account_holder/get_balance/3"))
+                .andExpect(jsonPath("$.message").value("Account 3 is Frozen"))
                 .andExpect(status().isBadRequest());
     }
 
@@ -95,6 +99,7 @@ class AccountHolderControllerTest {
         this.mockMvc.perform(patch("/account_holder/transfer_account/1/2")
                 .param("amount", "10000")
                 .param("beneficiaryName", "Nadie"))
+                .andExpect(jsonPath("$.message").value("Access denied"))
                 .andExpect(status().isForbidden());
     }
 
@@ -105,54 +110,59 @@ class AccountHolderControllerTest {
         this.mockMvc.perform(patch("/account_holder/transfer_account/345/2")
                 .param("amount", "10000")
                 .param("beneficiaryName", "Nadie"))
+                .andExpect(jsonPath("$.message").value("Account Holder does not exist"))
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    @Order(10)
-    @WithMockUser(username="eddy", password="eddy", roles="ACCOUNT_HOLDER")
-    void creditAccount_AccountHolderIsTheOwnerOfTheBeneficiaryAccount_BadRequest() throws Exception {
-        this.mockMvc.perform(patch("/account_holder/transfer_account/1/1")
-                .param("amount", "10000")
-                .param("beneficiaryName", "Nadie"))
-                .andExpect(status().isBadRequest());
-    }
+//    @Test
+//    @Order(10)
+//    @WithMockUser(username="user18", password="eddy", roles="ACCOUNT_HOLDER")
+//    void creditAccount_AccountHolderIsTheOwnerOfTheBeneficiaryAccount_BadRequest() throws Exception {
+//        this.mockMvc.perform(patch("/account_holder/transfer_account/18/11")
+//                .param("amount", "10000")
+//                .param("beneficiaryName", "Nadie"))
+//                .andExpect(jsonPath("$.message").value("Account Holder is the owner of the beneficiary account"))
+//                .andExpect(status().isBadRequest());
+//    }
 
     @Test
-    @Order(11)
+    @Order(10)
     @WithMockUser(username="user12", password="eddy", roles="ACCOUNT_HOLDER")
     void creditAccount_AccountHolderDoesNotHaveAccount_NotFound() throws Exception {
         this.mockMvc.perform(patch("/account_holder/transfer_account/12/2")
                 .param("amount", "10")
                 .param("beneficiaryName", "Nadie"))
+                .andExpect(jsonPath("$.message").value("Account Holder does not have account"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @Order(12)
+    @Order(11)
     @WithMockUser(username="eddy", password="eddy", roles="ACCOUNT_HOLDER")
     void creditAccount_AmountNotEnough_BadRequest() throws Exception {
         this.mockMvc.perform(patch("/account_holder/transfer_account/1/2")
                 .param("amount", "1000000")
                 .param("beneficiaryName", "Nadie"))
+                .andExpect(jsonPath("$.message").value("Amount for transfer not enough"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @Order(13)
+    @Order(12)
     @WithMockUser(username="eddy", password="eddy", roles="ACCOUNT_HOLDER")
     void creditAccount_BeneficaryAccountDoesNotExist_NotFound() throws Exception {
         this.mockMvc.perform(patch("/account_holder/transfer_account/1/90")
                 .param("amount", "10")
                 .param("beneficiaryName", "Nadie"))
+                .andExpect(jsonPath("$.message").value("Beneficiary account does not exist"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @Order(14)
+    @Order(13)
     @WithMockUser(username="eddas", password="eddy", roles="ACCOUNT_HOLDER")
     void creditAccount_Ok() throws Exception {
-        this.mockMvc.perform(patch("/account_holder/transfer_account/2/1")
+        this.mockMvc.perform(patch("/account_holder/transfer_account/2/11")
                 .param("amount", "10")
                 .param("beneficiaryName", "Nadie"))
                 .andExpect(jsonPath("$.balance").value(1030))
@@ -160,22 +170,33 @@ class AccountHolderControllerTest {
     }
 
     @Test
-    @Order(15)
-    @WithMockUser(username="eddy", password="eddy", roles="ACCOUNT_HOLDER")
+    @Order(14)
+    @WithMockUser(username="user16", password="eddy", roles="ACCOUNT_HOLDER")
     void creditAccount_Ok_WithPenaltyFee() throws Exception {
-        this.mockMvc.perform(patch("/account_holder/transfer_account/1/2")
-                .param("amount", "10")
+        this.mockMvc.perform(patch("/account_holder/transfer_account/16/4")
+                .param("amount", "500")
                 .param("beneficiaryName", "Nadie"))
-                .andExpect(jsonPath("$.balance").value(120))
+                .andExpect(jsonPath("$.balance").value(20))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @Order(16)
+    @Order(15)
     @WithMockUser(username="user12", password="eddy", roles="ACCOUNT_HOLDER")
     void getBalance_AccountHolderDoesNotHaveAnyAccount_NotFound() throws Exception {
         this.mockMvc.perform(get("/account_holder/get_balance/12"))
                 .andExpect(jsonPath("$.message").value("Account Holder 12 does not have any Account"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @Order(16)
+    @WithMockUser(username="user19", password="eddy", roles="ACCOUNT_HOLDER")
+    void creditAccount_AccountHolderIsTheOwnerOfTheBeneficiaryAccount_BadRequest() throws Exception {
+        this.mockMvc.perform(patch("/account_holder/transfer_account/19/12")
+                .param("amount", "10")
+                .param("beneficiaryName", "Nadie"))
+                .andExpect(jsonPath("$.message").value("Account Holder is the owner of the beneficiary account"))
+                .andExpect(status().isBadRequest());
     }
 }

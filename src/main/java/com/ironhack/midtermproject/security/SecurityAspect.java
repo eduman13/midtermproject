@@ -8,7 +8,6 @@ import com.ironhack.midtermproject.repository.CheckingRepository;
 import com.ironhack.midtermproject.repository.CreditCardRepository;
 import com.ironhack.midtermproject.repository.users.AccountHolderRepository;
 import com.ironhack.midtermproject.repository.users.ThirdPartyRepository;
-import com.ironhack.midtermproject.service.AccountHolderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
